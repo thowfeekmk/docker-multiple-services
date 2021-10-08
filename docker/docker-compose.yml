@@ -1,0 +1,57 @@
+version: '3.9'
+
+networks:
+  frontend:
+    driver: ${NETWORKS_DRIVER}
+  backend:
+    driver: ${NETWORKS_DRIVER}
+
+volumes:
+  mysql:
+    driver: ${VOLUMES_DRIVER}
+
+services:
+
+### Service1 Utilities ##################################
+    service1:
+      build:
+        context: ${SERVICE1_APP_CONTAINER}
+      volumes:
+        - ${SERVICE1_APP_CODE_PATH}:${CONTAINER_CODE_PATH}
+      ports:
+        - ${SERVICE1_APP_PORT}:${CONTAINER_PORT}
+      tty: true
+      networks:
+        - frontend
+        - backend
+### Service2 Utilities ##################################
+    service2:
+      build:
+        context: ${SERVICE2_APP_CONTAINER}
+      volumes:
+        - ${SERVICE2_APP_CODE_PATH}:${CONTAINER_CODE_PATH}
+      ports:
+        - ${SERVICE2_APP_PORT}:${CONTAINER_PORT}
+      tty: true
+      networks:
+        - frontend
+        - backend
+
+### MySQL ################################################
+    # mysql:
+    #   build:
+    #     context: ./mysql
+    #     args:
+    #       - MYSQL_VERSION=${MYSQL_VERSION}
+    #   environment:
+    #     - MYSQL_DATABASE=${MYSQL_DATABASE}
+    #     - MYSQL_USER=${MYSQL_USER}
+    #     - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    #     - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    #   volumes:
+    #     - ${DATA_PATH_HOST}/mysql:/var/lib/mysql
+    #     - ${MYSQL_ENTRYPOINT_INITDB}:/docker-entrypoint-initdb.d
+    #   ports:
+    #     - "${MYSQL_PORT}:3306"
+    #   networks:
+    #     - backend
